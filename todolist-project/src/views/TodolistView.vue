@@ -56,6 +56,8 @@
         </div>
       </div>
     </div>
+    <!-- 使用 LoadingOverlay 元件 -->
+    <LoadingOverlay :show="isShow" />
   </div>
 </template>
 
@@ -63,11 +65,12 @@
 import router from '@/router';
 import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
 const api = 'https://todolist-api.hexschool.io';
 const token = ref(document.cookie.replace(/(?:^|.*;\s*)customTodoToken\s*=\s*([^;]*).*$/i,
   "$1",));
-
+const isShow = ref(false);
 
 // 進入頁面先驗證是否取得token
 const user = ref({
@@ -106,6 +109,7 @@ const getTodos = async () => {
 // 登出功能
 const signOut = async () => {
   try {
+    isShow.value = true;
     const res = await axios.post(`${api}/users/sign_out`, {}, {
       headers: {
         authorization: token.value
@@ -118,6 +122,8 @@ const signOut = async () => {
   } catch (error) {
     console.log(error);
     alert('登出失敗');
+  } finally {
+    isShow.value = false;
   }
 }
 
@@ -125,6 +131,7 @@ const signOut = async () => {
 const newTodo = ref('');
 const addTodo = async () => {
   try {
+    isShow.value = true;
     const res = await axios.post(`${api}/todos/`, {
       content: newTodo.value
     }, {
@@ -137,6 +144,8 @@ const addTodo = async () => {
   } catch (error) {
     console.log(error);
     alert('新增失敗，請重新輸入待辦事項')
+  } finally {
+    isShow.value = false;
   }
 }
 
@@ -149,6 +158,7 @@ const switchTab = (tab) => {
 // 待辦清單切換狀態
 const toggleTodo = async (id) => {
   try {
+    isShow.value = true;
     const res = await axios.patch(`${api}/todos/${id}/toggle`, {}, {
       headers: {
         authorization: token.value
@@ -158,7 +168,8 @@ const toggleTodo = async (id) => {
 
   } catch (error) {
     console.log(error);
-
+  } finally {
+    isShow.value = false;
   }
 };
 // 篩選清單
@@ -178,6 +189,7 @@ const unfinishedCount = computed(() => {
 // 刪除待辦事項功能
 const deleteTodo = async (id) => {
   try {
+    isShow.value = true;
     await axios.delete(`${api}/todos/${id}`, {
       headers: {
         authorization: token.value
@@ -187,7 +199,8 @@ const deleteTodo = async (id) => {
 
   } catch (error) {
     console.log(error);
-
+  } finally {
+    isShow.value = false;
   }
 };
 

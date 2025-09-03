@@ -39,6 +39,8 @@
         </form>
       </div>
     </div>
+    <!-- 使用 LoadingOverlay 元件 -->
+    <LoadingOverlay :show="isShow" />
   </div>
 </template>
 
@@ -47,6 +49,7 @@ import { reactive, ref } from 'vue';
 import axios from 'axios';
 import validate from 'validate.js';
 import { useRouter } from 'vue-router';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
 const api = 'https://todolist-api.hexschool.io';
 const router = useRouter();
@@ -55,6 +58,7 @@ const emailSignUp = ref('');
 const nickname = ref('');
 const passwordSignUp = ref('');
 const comfirmPassword = ref('');
+const isShow = ref(false);
 
 // 使用vaildate.js驗證
 const errors = reactive({
@@ -122,6 +126,7 @@ const signUp = async () => {
     return;
   }
   try {
+    isShow.value = true;
     const res = await axios.post(`${api}/users/sign_up`, formData);
     console.log(res);
     alert('註冊成功');
@@ -129,6 +134,8 @@ const signUp = async () => {
     router.push('login');
   } catch (error) {
     alert(`註冊失敗： ${error.response.data.message}`);
+  } finally {
+    isShow.value = false;
   }
 }
 
