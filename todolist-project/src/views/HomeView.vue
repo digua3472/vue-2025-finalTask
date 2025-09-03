@@ -4,6 +4,6 @@
 
 <template>
   <main>
-    123
+    首頁
   </main>
 </template>
