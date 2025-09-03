@@ -79,6 +79,7 @@ const user = ref({
 })
 onMounted(async () => {
   try {
+    isShow.value = true;
     const res = await axios.get(`${api}/users/checkout`, {
       headers: {
         authorization: token.value
@@ -92,6 +93,8 @@ onMounted(async () => {
     alert('驗證失敗，請重新登入')
     // 未驗證成功跳轉到登入頁面
     router.push('login');
+  } finally {
+    isShow.value = false;
   }
 })
 
